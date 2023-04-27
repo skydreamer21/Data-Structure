@@ -56,12 +56,34 @@ public class IndexedPriorityQueue<E extends Comparable<E>> implements iIPQ<E> {
         siftUp(size+1, element);
         size++;
         keyIndex++;
+        
+        if (keyIndex >= values.length) {
+            resizeKeyIndex();
+        }
     }
     
     private void resize() {
         int newSize = queue.length * 2;
         Object[] newQueue = new Object[newSize];
         System.arraycopy(queue, 1, newQueue, 1, size);
+        queue = newQueue;
+        
+        int[] newInverseMap = new int[newSize];
+        Arrays.fill(newInverseMap, EMPTY);
+        System.arraycopy(inverseMap, 1, newInverseMap, 1, size);
+        inverseMap = newInverseMap;
+    }
+    
+    private void resizeKeyIndex() {
+        int newSize = values.length * 2;
+        Object[] newValues = new Object[newSize];
+        System.arraycopy(values, 0, newValues, 1, values.length);
+        values = newValues;
+        
+        int[] newPositionMap = new int[newSize];
+        Arrays.fill(newPositionMap, EMPTY);
+        System.arraycopy(positionMap, 0, newPositionMap, 0, positionMap.length);
+        positionMap = newPositionMap;
     }
     
     private void siftUp(int idx, E element) {
